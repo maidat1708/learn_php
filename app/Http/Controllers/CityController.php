@@ -6,6 +6,7 @@ use App\Http\Responses\ApiResponse;
 use App\Models\City;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -38,5 +39,18 @@ class CityController extends Controller
             DB::rollback();
             return ApiResponse::error($e->getMessage(),400);
         }
+    }
+    public function index(){
+        $timeStart = microtime(true);
+        // $cities = Cache::remember('cache_cities',20, function () {
+        //     return $this->city->all();
+        // });
+        $cities = $this->city->all();
+        $timeExe = microtime(true) - $timeStart;
+        return [
+            "cities_size" => count($cities),
+            "Exe_Time" => $timeExe
+        ];
+        // ApiResponse::testPerformance($cities,$timeExe,"hehe",201);
     }
 }

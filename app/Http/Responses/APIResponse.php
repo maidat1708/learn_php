@@ -16,6 +16,16 @@ class ApiResponse
         ], $statusCode);
     }
 
+    public static function testPerformance($data, $time,$message = 'Success', $statusCode = 200)
+    {
+        return response()->json([
+            'Execution time' => $time,
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $statusCode);
+    }
+
     public static function error($message, $statusCode = 400, $errors = [])
     {
         return response()->json([

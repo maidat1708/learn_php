@@ -42,6 +42,7 @@ class LoginController extends Controller
     }
     public function index()
     {
+        if(auth()->check()) return to_route("authors.index");
         return view('login.login');
     }
     public function showRegister()

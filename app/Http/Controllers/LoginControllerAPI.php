@@ -42,6 +42,7 @@ class LoginControllerAPI extends Controller
         $field = $request->validated();
         if (Auth::attempt((["email"=> $field['email'] ,"password"=> $field['password']]))) {
             // Authentication passed...
+            session()->regenerate();
             $user = Auth::user();
             $token = $user->createToken('Personal Access Token')->accessToken;
             // return response()->json([
@@ -62,6 +63,12 @@ class LoginControllerAPI extends Controller
         //     'success' => false,
         //     'message' => 'Login failed, invalid credentials'
         // ], 401);
+    }
+    public function logout(){
+        auth()->logout();
+        session()->invalidate();
+        session()->regenerate();
+        return redirect('/');
     }
     public function index()
     {
