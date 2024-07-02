@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // gọi Helper ko cần viết đủ
+    'aliases' => [
+        'Helper' => \App\Helpers\Helper::class
+    ]
 ];

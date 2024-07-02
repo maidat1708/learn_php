@@ -10,12 +10,17 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private Article $article;
+    public function __construct(Article $article){
+        $this->article = $article;
+    }
     public function index()
     {
         //
-        $articles = Article::all();
+        $articles = $this->article->all();
         return view("articles.index",[
-            "articles" => $articles
+            "articles" => $articles,
+            "trash"=> false,
         ]);
     }
 
@@ -58,7 +63,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $article = Article::where('id', $id)
+        $article = $this->article->where('id', $id)
             ->update([
                 'title' => $request->input('title'),
                 'idCat'=> $request->input('idCat'),
@@ -77,5 +82,24 @@ class ArticleController extends Controller
         //
         $article->delete();
         return redirect('/articles');
+    }
+
+    public function showTrash(){
+        $articles = $this->article->onlyTrashed()->get();
+        return view("articles.index",[
+            "articles" => $articles,
+            "trash"=>true,
+        ]);
+    }
+    public function restore(Request $request){
+        $this->article->withTrashed()->find($request->article_id)->restore();
+        return to_route("articles.index");
+    }
+    public function forceDelete(Request $request){
+        $this->article->onlyTrashed()->find($request->article_id)->forceDelete();
+        if($this->article->onlyTrashed()->count() == 0){
+            return to_route("articles.index");
+        }
+        return to_route("articles.trash");
     }
 }
